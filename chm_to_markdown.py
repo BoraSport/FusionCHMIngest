@@ -4,6 +4,9 @@ import json
 import shutil
 import asyncio
 import argparse
+import platform
+import gc
+import chardet
 from concurrent.futures import ThreadPoolExecutor
 from bs4 import BeautifulSoup
 import html2text
@@ -42,6 +45,48 @@ DTDUCAS_LOGO = """
  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------'  '----------------' 
 Duong Tran Quang - DTDucas (baymax.contact@gmail.com)
 """
+
+
+def detect_file_encoding(file_path):
+    """Detect file encoding using chardet, with fallback to common Chinese encodings."""
+    try:
+        with open(file_path, 'rb') as f:
+            raw_data = f.read(10000)  # Read first 10KB for detection
+        result = chardet.detect(raw_data)
+        encoding = result.get('encoding', 'utf-8')
+        confidence = result.get('confidence', 0)
+
+        # For low confidence or Chinese content, try common encodings
+        if confidence < 0.7:
+            # Try common Chinese encodings in order
+            for enc in ['gb18030', 'gbk', 'gb2312', 'utf-8']:
+                try:
+                    with open(file_path, 'r', encoding=enc) as f:
+                        f.read(1000)
+                    return enc
+                except:
+                    continue
+        return encoding
+    except:
+        # Fallback to trying common encodings
+        for enc in ['gb18030', 'gbk', 'gb2312', 'utf-8']:
+            try:
+                with open(file_path, 'r', encoding=enc) as f:
+                    f.read(1000)
+                return enc
+            except:
+                continue
+        return 'utf-8'
+
+
+async def read_file_with_encoding(file_path):
+    """Read file with automatic encoding detection."""
+    loop = asyncio.get_running_loop()
+    # Detect encoding in thread pool to avoid blocking
+    encoding = await loop.run_in_executor(None, detect_file_encoding, file_path)
+    # Read with detected encoding
+    async with aiofiles.open(file_path, 'r', encoding=encoding, errors='replace') as f:
+        return await f.read()
 
 
 def extract_page_title(soup):
@@ -293,12 +338,26 @@ async def export_chm_to_htm(chm_path, export_folder):
     if not os.path.exists(export_folder):
         os.makedirs(export_folder)
     clear_folder(export_folder)
-    seven_zip = r"C:\Program Files\7-Zip\7z.exe"
-    if not os.path.exists(seven_zip):
-        print(
-            "7z.exe not found. Please install 7-Zip and update the seven_zip path accordingly."
-        )
-        return False
+
+    # Detect platform and set appropriate 7z command
+    if platform.system() == "Windows":
+        seven_zip = r"C:\Program Files\7-Zip\7z.exe"
+        if not os.path.exists(seven_zip):
+            print(
+                "7z.exe not found. Please install 7-Zip and update the seven_zip path accordingly."
+            )
+            return False
+    else:
+        # Linux/macOS: use '7z' or '7zz' from PATH
+        seven_zip = "7z"
+        # Check if 7z is available
+        if not shutil.which(seven_zip):
+            seven_zip = "7zz"
+            if not shutil.which(seven_zip):
+                print(
+                    "7z not found. Please install p7zip-full: sudo apt install p7zip-full"
+                )
+                return False
     try:
         process = await asyncio.create_subprocess_exec(
             seven_zip,
@@ -319,10 +378,27 @@ async def export_chm_to_htm(chm_path, export_folder):
         return False
 
 
-async def build_file_dictionary(input_folder, version=None):
+def find_html_folder(input_folder):
+    """Find the folder containing HTML files. CHM files can have different structures."""
     html_folder = os.path.join(input_folder, "html")
-    if not os.path.exists(html_folder):
-        print(f"HTML folder does not exist: {html_folder}")
+    if os.path.exists(html_folder):
+        return html_folder
+
+    # Check if HTML files are directly in the input folder
+    html_files = [
+        f for f in os.listdir(input_folder)
+        if f.lower().endswith((".htm", ".html"))
+    ]
+    if html_files:
+        return input_folder
+
+    return None
+
+
+async def build_file_dictionary(input_folder, version=None):
+    html_folder = find_html_folder(input_folder)
+    if not html_folder:
+        print(f"No HTML folder or files found in: {input_folder}")
         return {}
     file_dictionary = {}
     semaphore = asyncio.Semaphore(20)
@@ -332,10 +408,7 @@ async def build_file_dictionary(input_folder, version=None):
         base, _ = os.path.splitext(filename)
         try:
             async with semaphore:
-                async with aiofiles.open(
-                    input_path, "r", encoding="utf-8", errors="ignore"
-                ) as f:
-                    html_content = await f.read()
+                html_content = await read_file_with_encoding(input_path)
             soup = BeautifulSoup(html_content, "html.parser")
             title = extract_page_title(soup)
             file_info = {
@@ -357,10 +430,15 @@ async def build_file_dictionary(input_folder, version=None):
         f for f in os.listdir(html_folder) if f.lower().endswith((".htm", ".html"))
     ]
     print(f"Building dictionary from {len(file_list)} HTML files...")
-    tasks = [process_file_for_dict(filename) for filename in file_list]
-    results = await asyncio.gather(*tasks)
-    for base, info in results:
-        file_dictionary[base] = info
+    batch_size = 100
+    for i in range(0, len(file_list), batch_size):
+        batch_files = file_list[i : i + batch_size]
+        batch_tasks = [process_file_for_dict(filename) for filename in batch_files]
+        results = await asyncio.gather(*batch_tasks)
+        for base, info in results:
+            file_dictionary[base] = info
+        if (i // batch_size + 1) % 10 == 0:
+            gc.collect()
     print(f"Dictionary built with {len(file_dictionary)} entries")
     return file_dictionary
 
@@ -376,9 +454,9 @@ async def convert_files_with_dictionary(
     semaphore_limit=20,
     batch_size=10,
 ):
-    html_folder = os.path.join(input_folder, "html")
-    if not os.path.exists(html_folder):
-        print(f"HTML folder does not exist: {html_folder}")
+    html_folder = find_html_folder(input_folder)
+    if not html_folder:
+        print(f"No HTML folder or files found in: {input_folder}")
         return
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -417,6 +495,8 @@ async def convert_files_with_dictionary(
             print(
                 f"Batch {batch_number}: Processed {len(batch_files)} files. {remaining} remaining."
             )
+            if batch_number % 50 == 0:
+                gc.collect()
     await create_index_files(core_folder, file_dictionary, version)
 
 
@@ -426,10 +506,7 @@ async def process_file(
     loop = asyncio.get_running_loop()
     try:
         async with semaphore:
-            async with aiofiles.open(
-                input_path, "r", encoding="utf-8", errors="ignore"
-            ) as f:
-                html_content = await f.read()
+            html_content = await read_file_with_encoding(input_path)
         markdown_content = await loop.run_in_executor(
             executor, convert_html_to_markdown, html_content, file_dictionary, version
         )
