@@ -294,7 +294,21 @@ def mcp_config():
     click.echo("\n=== Claude Desktop ===")
     click.echo("File: ~/Library/Application Support/Claude/claude_desktop_config.json")
     click.echo("\n=== Cursor ===")
-    click.echo("Add via Settings > MCP > Add new server")
+    click.echo("Settings > MCP > Add new server")
+    click.echo("\n=== VS Code + GitHub Copilot ===")
+    click.echo("Settings > Extensions > GitHub Copilot > Advanced > MCP Servers")
+    click.echo("Or add to settings.json:")
+    vscode_config = {
+        "github.copilot.advanced.mcpServers": {
+            "fusion360-api": {
+                "command": "fusionchmingest",
+                "args": ["mcp"]
+            }
+        }
+    }
+    click.echo(json.dumps(vscode_config, indent=2))
+    click.echo("\n=== OpenCode ===")
+    click.echo("Add via Settings > MCP configuration")
 
 
 @cli.command()

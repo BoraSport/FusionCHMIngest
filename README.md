@@ -110,6 +110,39 @@ The MCP server provides tools for AI coding agents:
 
 4. Restart Cursor
 
+#### VS Code + GitHub Copilot
+
+1. Open VS Code settings (JSON): `Cmd+,` then click the Open Settings (JSON) icon
+2. Add this configuration:
+
+```json
+{
+  "github.copilot.advanced.mcpServers": {
+    "fusion360-api": {
+      "command": "fusionchmingest",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+3. Restart VS Code
+
+#### OpenCode
+
+Add the same configuration to OpenCode's MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "fusion360-api": {
+      "command": "fusionchmingest",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
 #### Auto-Configure
 
 Run this command to generate the configuration:
