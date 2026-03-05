@@ -650,9 +650,13 @@ async def process_all_chm_files(
                 print(f"  - {os.path.basename(chm_file)}")
 
 
-async def main():
-    print(DTDUCAS_LOGO)
+async def main(verbose: bool = False):
+    if verbose:
+        print("=== FusionCHMIngest CHM to Markdown Converter (Verbose Mode) ===")
+    else:
+        print(DTDUCAS_LOGO)
     parser = argparse.ArgumentParser(description="Convert CHM files to Markdown format")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed progress")
     parser.add_argument("--single", "-s", help="Process a single CHM file")
     parser.add_argument(
         "--all",
@@ -679,6 +683,13 @@ async def main():
         help="Semaphore limit for concurrent operations",
     )
     args = parser.parse_args()
+    
+    # Use verbose from args if not passed as parameter
+    verbose = verbose or getattr(args, 'verbose', False)
+    
+    if verbose:
+        print(f"Settings: workers={args.workers}, batch_size={args.batch_size}, semaphore={args.semaphore}")
+    
     resources_folder = r"resources"
     base_input_folder = r"extracted"
     base_output_folder = r"output"
