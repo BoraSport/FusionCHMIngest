@@ -24,7 +24,17 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-asyncio", "pytest-cov"]
+test = [
+    "pytest>=7.0",
+    "pytest-asyncio",
+    "pytest-cov",
+    "click",
+    "beautifulsoup4",
+    "chardet",
+    "aiofiles",
+    "html2text",
+    "tiktoken",
+]
 dev = ["ruff", "black"]
 
 [project.scripts]

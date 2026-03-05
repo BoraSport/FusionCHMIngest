@@ -1,0 +1,9 @@
+pytest>=7.0
+pytest-asyncio
+pytest-cov
+click
+beautifulsoup4
+chardet
+aiofiles
+html2text
+tiktoken
