@@ -39,10 +39,13 @@ pip install -e .
 
 ```bash
 # Convert CHM to Markdown
-fusionchmingest convert
+fusionchmingest convert --verbose
 
 # Run full pipeline (convert + embed + store)
-fusionchmingest ingest
+fusionchmingest ingest --verbose
+
+# Verify CHM was processed successfully
+fusionchmingest verify
 
 # Search the vector database
 fusionchmingest search "how to create a component"
@@ -52,9 +55,6 @@ fusionchmingest get-class Feature
 
 # List all available API classes
 fusionchmingest list-classes
-
-# Start MCP server for AI agents
-fusionchmingest mcp
 
 # Check status
 fusionchmingest status
@@ -70,6 +70,55 @@ The MCP server provides tools for AI coding agents:
 | `get_api_class` | Get full documentation for a class |
 | `get_api_example` | Get code examples |
 | `list_api_classes` | List all available classes |
+
+### Connecting AI Agents
+
+#### Claude Desktop
+
+1. Open `~/Library/Application Support/Claude/claude_desktop_config.json`
+2. Add this configuration:
+
+```json
+{
+  "mcpServers": {
+    "fusion360-api": {
+      "command": "fusionchmingest",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+3. Restart Claude Desktop
+
+#### Cursor
+
+1. Open Cursor settings
+2. Navigate to MCP configuration
+3. Add this configuration:
+
+```json
+{
+  "mcpServers": {
+    "fusion360-api": {
+      "command": "fusionchmingest",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+4. Restart Cursor
+
+#### Auto-Configure
+
+Run this command to generate the configuration:
+
+```bash
+fusionchmingest mcp-config
+```
+
+This will output the JSON configuration for your agent.
 
 ## Requirements
 

@@ -277,6 +277,27 @@ def mcp():
 
 
 @cli.command()
+def mcp_config():
+    """Show MCP configuration for AI agents"""
+    config = {
+        "mcpServers": {
+            "fusion360-api": {
+                "command": "fusionchmingest",
+                "args": ["mcp"]
+            }
+        }
+    }
+    import json
+    click.echo("=== MCP Configuration ===\n")
+    click.echo("Add this to your agent's MCP configuration:\n")
+    click.echo(json.dumps(config, indent=2))
+    click.echo("\n=== Claude Desktop ===")
+    click.echo("File: ~/Library/Application Support/Claude/claude_desktop_config.json")
+    click.echo("\n=== Cursor ===")
+    click.echo("Add via Settings > MCP > Add new server")
+
+
+@cli.command()
 def serve():
     """Start REST API server (optional)"""
     click.echo("Starting REST API server...")
