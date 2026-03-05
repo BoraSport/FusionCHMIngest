@@ -1,0 +1,79 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Create virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install dependencies using venv pip
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-ci.txt
+          python -m pip install -e .
+
+      - name: Run unit tests
+        run: |
+          source venv/bin/activate
+          pytest tests/unit/ -v --tb=short
+
+      - name: Run integration tests
+        run: |
+          source venv/bin/activate
+          pytest tests/integration/ -v --tb=short
+
+      - name: Upload coverage
+        if: success()
+        run: |
+          source venv/bin/activate
+          pytest tests/ --cov=fusionchmingest --cov-report=xml --cov-report=html
+
+  lint:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Create virtual environment for linting
+        run: |
+          python -m venv venv-lint
+          source venv-lint/bin/activate
+          python -m pip install ruff black
+
+      - name: Run ruff
+        run: |
+          source venv-lint/bin/activate
+          ruff check fusionchmingest/
+
+      - name: Run black
+        run: |
+          source venv-lint/bin/activate
+          black --check fusionchmingest/

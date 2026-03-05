@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fusionchmingest"
+version = "0.1.0"
+description = "Convert Fusion360 API documentation to vector embeddings for AI coding agents"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "FusionCHMIngest Contributors"}]
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4",
+    "html2text",
+    "aiofiles",
+    "chromadb>=0.4.0",
+    "sentence-transformers",
+    "torch",
+    "click",
+    "tiktoken",
+    "chardet",
+    "mcp>=1.0.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-asyncio", "pytest-cov"]
+dev = ["ruff", "black"]
+
+[project.scripts]
+fusionchmingest = "fusionchmingest.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fusionchmingest*"]

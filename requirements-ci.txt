@@ -1,0 +1,16 @@
+pytest
+pytest-asyncio
+pytest-cov
+click
+beautifulsoup4
+chromadb
+tiktoken
+numpy
+torch
+sentence-transformers
+chardet
+aiofiles
+html2text
+mcp
+ruff
+black
