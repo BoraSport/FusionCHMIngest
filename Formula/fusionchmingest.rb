@@ -2,7 +2,7 @@ class Fusionchmingest < Formula
   desc "Convert Fusion360 API documentation to vector embeddings for AI coding agents"
   homepage "https://github.com/wschramm/FusionCHMIngest"
   url "https://github.com/wschramm/FusionCHMIngest/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "TODO"
+  sha256 "b8b182404cac3e2057eb992a043fa02d8da3898b0d1bf8438a1455a70ab0ecd0"
   license "MIT"
   head "https://github.com/wschramm/FusionCHMIngest.git"
 
@@ -13,16 +13,6 @@ class Fusionchmingest < Formula
       Formula["python@3.11"].opt_bin/"python3",
       venv_root: Pathname.new(prefix)/"libexec"
     )
-    venv.pip_install "beautifulsoup4"
-    venv.pip_install "html2text"
-    venv.pip_install "aiofiles"
-    venv.pip_install "chromadb>=0.4.0"
-    venv.pip_install "sentence-transformers"
-    venv.pip_install "torch"
-    venv.pip_install "click"
-    venv.pip_install "tiktoken"
-    venv.pip_install "chardet"
-    venv.pip_install "mcp>=1.0.0"
     venv.pip_install_and_link "."
     bin.write_script_content <<~PYTHON
       #!/bin/bash

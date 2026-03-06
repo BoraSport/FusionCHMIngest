@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fusionchmingest"
-version = "0.1.0"
+version = "1.0.0"
 description = "Convert Fusion360 API documentation to vector embeddings for AI coding agents"
 readme = "README.md"
 license = {text = "MIT"}

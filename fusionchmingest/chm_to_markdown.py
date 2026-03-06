@@ -682,10 +682,21 @@ async def main(verbose: bool = False):
         default=20,
         help="Semaphore limit for concurrent operations",
     )
-    args = parser.parse_args()
-    
-    # Use verbose from args if not passed as parameter
-    verbose = verbose or getattr(args, 'verbose', False)
+    # If verbose is passed directly, use default values for all args
+    if verbose:
+        # Called from CLI - use defaults without parsing sys.argv
+        class Args:
+            pass
+        args = Args()
+        args.workers = 8
+        args.batch_size = 50
+        args.semaphore = 20
+        args.single = None
+        args.all = True  # Process all by default
+        args.keep_html = False
+    else:
+        args = parser.parse_args()
+        verbose = getattr(args, 'verbose', False)
     
     if verbose:
         print(f"Settings: workers={args.workers}, batch_size={args.batch_size}, semaphore={args.semaphore}")

@@ -12,9 +12,17 @@ Convert Fusion360 API documentation to vector embeddings for AI coding agents.
 
 ## Installation
 
-### Homebrew (macOS)
+### Homebrew (macOS) - Recommended
 
 ```bash
+brew install fusionchmingest
+```
+
+For first-time installation from local tap:
+
+```bash
+mkdir -p /opt/homebrew/Library/Taps/fusionchmingest
+cp Formula/fusionchmingest.rb /opt/homebrew/Library/Taps/fusionchmingest/
 brew install fusionchmingest
 ```
 
@@ -26,10 +34,52 @@ git clone https://github.com/BoraSport/FusionCHMIngest.git
 cd FusionCHMIngest
 
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate
 
 # Install dependencies
+pip install -e .
+
+# Verify installation
+fusionchmingest --version
+```
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.11+
+- Homebrew (for macOS)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/BoraSport/FusionCHMIngest.git
+cd FusionCHMIngest
+
+# Remove and recreate virtual environment (if needed)
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+
+# Install all dependencies
+pip install -e .
+
+# Install test dependencies
+pip install pytest pytest-asyncio
+
+# Run tests
+pytest tests/
+```
+
+### Common Issues
+
+**Broken venv**: If the venv doesn't work, delete and recreate:
+```bash
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 
