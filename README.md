@@ -16,16 +16,38 @@ Convert Fusion360 API documentation to vector embeddings for AI coding agents.
 
 > **Note:** This formula has not been submitted to Homebrew core yet. Installation requires adding a local tap.
 
+#### Quick Install (if tap already exists)
+
 ```bash
 brew install fusionchmingest
 ```
 
-For first-time installation from local tap:
+#### First-Time Setup: Create Local Tap
+
+Since this formula isn't in Homebrew core yet, you need to set up a local tap once:
 
 ```bash
+# 1. Create the tap directory
 mkdir -p /opt/homebrew/Library/Taps/fusionchmingest
+
+# 2. Copy the formula to the tap
 cp Formula/fusionchmingest.rb /opt/homebrew/Library/Taps/fusionchmingest/
+
+# 3. Install
 brew install fusionchmingest
+```
+
+After the first install, you can simply run:
+```bash
+brew update
+brew upgrade fusionchmingest
+```
+
+#### Uninstall
+
+```bash
+brew uninstall fusionchmingest
+rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
 ### From Source
