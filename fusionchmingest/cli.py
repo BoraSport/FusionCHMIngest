@@ -6,7 +6,7 @@ from pathlib import Path
 from fusionchmingest.vector_store import VectorStore
 
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 
 @click.group()
@@ -54,11 +54,7 @@ def ingest(verbose):
     
     version = "latest"
     
-    if verbose:
-        click.echo("\n=== Step 2: Chunking markdown files ===")
-    else:
-        click.echo("Step 2: Chunking markdown files...")
-    
+    chunks = []
     total_chunks = 0
     for root, dirs, files in os.walk(output_dir):
         for d in dirs:
@@ -81,22 +77,16 @@ def ingest(verbose):
     else:
         click.echo("Step 3: Generating embeddings...")
     
-    from fusionchmingest.chunk_markdown import Chunk
-    chunks = [Chunk(
-        chunk_id=f"temp_{i}",
-        content=f"content {i}",
-        title="temp",
-        source_file="temp.md",
-        api_type="class"
-    ) for i in range(total_chunks)]
-    
     try:
+        from fusionchmingest.embed_documents import ChunkWithEmbedding
         chunks_with_embeddings = embed_chunks(chunks)
         if verbose:
             click.echo(f"Generated {len(chunks_with_embeddings)} embeddings")
+        chunks_to_store = [cwe.chunk for cwe in chunks_with_embeddings]
     except Exception as e:
         if verbose:
             click.echo(f"Warning: Could not generate embeddings: {e}")
+        chunks_to_store = chunks
     
     if verbose:
         click.echo("\n=== Step 4: Storing in vector database ===")
@@ -105,11 +95,11 @@ def ingest(verbose):
     
     try:
         vs = VectorStore()
-        vs.add_chunks(chunks)
+        vs.add_chunks(chunks_to_store)
         if verbose:
-            click.echo(f"Added {len(chunks)} chunks to vector store")
+            click.echo(f"Added {len(chunks_to_store)} chunks to vector store")
         else:
-            click.echo(f"Added {len(chunks)} chunks to vector store")
+            click.echo(f"Added {len(chunks_to_store)} chunks to vector store")
     except Exception as e:
         if verbose:
             click.echo(f"Warning: Could not store in vector DB: {e}")
@@ -117,6 +107,30 @@ def ingest(verbose):
         return
     
     click.echo("Pipeline complete!")
+    
+    chunk_count = vs.get_count()
+    vector_store_path = os.path.expanduser("~/.fusionchmingest/vectorstore")
+    
+    click.echo("")
+    click.echo("=" * 50)
+    click.echo("Now connect to AI agents via MCP!")
+    click.echo("=" * 50)
+    click.echo("")
+    click.echo(f"Vector store: {chunk_count} chunks")
+    click.echo(f"Location: {vector_store_path}")
+    click.echo("")
+    click.echo("Add this to your AI agent's MCP settings:")
+    click.echo("")
+    click.echo("  {")
+    click.echo("    \"mcpServers\": {")
+    click.echo("      \"fusion360-api\": {")
+    click.echo("        \"command\": \"fusionchmingest\",")
+    click.echo("        \"args\": [\"mcp\"]")
+    click.echo("      }")
+    click.echo("    }")
+    click.echo("  }")
+    click.echo("")
+    click.echo("For more options, run: fusionchmingest mcp-config")
 
 
 @cli.command()
