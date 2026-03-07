@@ -123,11 +123,20 @@ pip install -e .
 # Show all available commands and options
 fusionchmingest --help
 
-# Convert CHM to Markdown
+# Convert CHM to Markdown (all files)
 fusionchmingest convert --verbose
 
-# Run full pipeline (convert + embed + store)
+# Convert a specific CHM file
+fusionchmingest convert --single 20260304-FusionAPI.chm
+
+# Run full pipeline (convert + embed + store) - processes all CHM files
 fusionchmingest ingest --verbose
+
+# Run full pipeline for a specific CHM file
+fusionchmingest ingest --single 20260304-FusionAPI.chm
+
+# Run full pipeline for all CHM files in resources folder
+fusionchmingest ingest --all
 
 # Verify CHM was processed successfully
 fusionchmingest verify

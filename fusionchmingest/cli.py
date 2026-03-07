@@ -30,7 +30,9 @@ def convert(verbose):
 
 @cli.command()
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed progress")
-def ingest(verbose):
+@click.option("--single", "-s", help="Process a single CHM file")
+@click.option("--all", "-a", "process_all", is_flag=True, help="Process all CHM files in resources folder")
+def ingest(verbose, single, process_all):
     """Run full pipeline (convert + embed)"""
     if verbose:
         click.echo("Starting full pipeline (verbose mode)...")
@@ -45,7 +47,7 @@ def ingest(verbose):
         click.echo("\n=== Step 1: Converting CHM to Markdown ===")
     else:
         click.echo("Step 1: Converting CHM to Markdown...")
-    asyncio.run(convert_main(verbose=verbose))
+    asyncio.run(convert_main(verbose=verbose, single=single, process_all=process_all))
     
     output_dir = "output"
     if not os.path.exists(output_dir):

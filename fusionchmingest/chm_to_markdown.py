@@ -8,6 +8,7 @@ import platform
 import gc
 import chardet
 from concurrent.futures import ThreadPoolExecutor
+from typing import Optional
 from bs4 import BeautifulSoup
 import html2text
 import aiofiles
@@ -650,7 +651,7 @@ async def process_all_chm_files(
                 print(f"  - {os.path.basename(chm_file)}")
 
 
-async def main(verbose: bool = False):
+async def main(verbose: bool = False, single: Optional[str] = None, process_all: bool = False):
     if verbose:
         print("=== FusionCHMIngest CHM to Markdown Converter (Verbose Mode) ===")
     else:
@@ -682,18 +683,19 @@ async def main(verbose: bool = False):
         default=20,
         help="Semaphore limit for concurrent operations",
     )
-    # If verbose is passed directly, use default values for all args
-    if verbose:
-        # Called from CLI - use defaults without parsing sys.argv
+    # If verbose or other params are passed directly, use defaults without parsing sys.argv
+    if verbose or single or process_all:
+        # Called from CLI programmatically - use provided values
         class Args:
             pass
         args = Args()
         args.workers = 8
         args.batch_size = 50
         args.semaphore = 20
-        args.single = None
-        args.all = True  # Process all by default
+        args.single = single
+        args.all = process_all
         args.keep_html = False
+        args.verbose = verbose
     else:
         args = parser.parse_args()
         verbose = getattr(args, 'verbose', False)
