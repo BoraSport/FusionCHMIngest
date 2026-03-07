@@ -120,6 +120,9 @@ pip install -e .
 ### CLI Commands
 
 ```bash
+# Show all available commands and options
+fusionchmingest --help
+
 # Convert CHM to Markdown
 fusionchmingest convert --verbose
 
