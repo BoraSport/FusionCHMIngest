@@ -1,8 +1,8 @@
 class Fusionchmingest < Formula
   desc "Convert Fusion360 API documentation to vector embeddings for AI coding agents"
-  homepage "https://github.com/wschramm/FusionCHMIngest"
-  url "https://github.com/wschramm/FusionCHMIngest/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "b8b182404cac3e2057eb992a043fa02d8da3898b0d1bf8438a1455a70ab0ecd0"
+  homepage "https://github.com/BoraSport/FusionCHMIngest"
+  url "https://github.com/BoraSport/FusionCHMIngest/archive/refs/tags/v1.0.0.tar.gz"
+  sha256 "21ec54d5a9536e5d75218c49803bb754c0a07ed28917c2cab7fc471cbf781427"
   license "MIT"
   head "https://github.com/wschramm/FusionCHMIngest.git"
 
