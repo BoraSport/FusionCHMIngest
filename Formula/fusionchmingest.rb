@@ -20,6 +20,22 @@ class Fusionchmingest < Formula
     PYTHON
   end
 
+  def caveats
+    <<~EOS
+      User data is NOT removed on uninstall:
+      - Vector store: ~/.fusionchmingest/
+      
+      To remove manually:
+        rm -rf ~/.fusionchmingest
+      
+      Or use 'brew zap' to remove user data automatically.
+    EOS
+  end
+
+  def zap
+    rm_rf "~/.fusionchmingest"
+  end
+
   test do
     assert_match "FusionCHMIngest", shell_output("#{bin}/fusionchmingest --version")
   end
