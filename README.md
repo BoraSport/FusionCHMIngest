@@ -51,10 +51,22 @@ brew upgrade fusionchmingest
 #### Uninstall
 
 ```bash
+# Uninstall the app
 brew uninstall fusionchmingest
 ```
 
 ```bash
+# Remove user data (vector store)
+rm -rf ~/.fusionchmingest
+```
+
+```bash
+# Or use zap to remove both app and user data
+brew zap fusionchmingest
+```
+
+```bash
+# Remove the local tap
 rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
