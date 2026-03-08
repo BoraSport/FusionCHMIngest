@@ -9,7 +9,7 @@ class Fusionchmingest < Formula
   depends_on "python@3.11"
 
   def install
-    python = Formula["python@3.11"].opt_bin/"python3"
+    python = Pathname.new("#{HOMEBREW_PREFIX}/opt/python@3.11/bin/python3")
     
     # Create virtual environment using Python's built-in venv
     system python, "-m", "venv", prefix/"libexec"
