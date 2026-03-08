@@ -27,14 +27,22 @@ brew install fusionchmingest
 Since this formula isn't in Homebrew core yet, you need to set up a local tap once:
 
 ```bash
-mkdir -p /opt/homebrew/Library/Taps/fusionchmingest
+# Remove old tap if it exists (optional, for clean setup)
+rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
 ```bash
-cp Formula/fusionchmingest.rb /opt/homebrew/Library/Taps/fusionchmingest/
+# Create the tap (this creates the proper directory structure)
+brew tap-new fusionchmingest/fusionchmingest
 ```
 
 ```bash
+# Copy the formula to the tap
+cp Formula/fusionchmingest.rb $(brew --repository fusionchmingest/fusionchmingest)/Formula/
+```
+
+```bash
+# Install fusionchmingest
 brew install fusionchmingest
 ```
 
