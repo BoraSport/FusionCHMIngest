@@ -17,15 +17,17 @@ class Fusionchmingest < Formula
     # Upgrade pip in the venv
     system prefix/"libexec/bin/pip", "install", "--upgrade", "pip"
     
+    # Remove conflicting file that causes pip to fail
+    rm_rf buildpath/"fusionchmingest"
+    
     # Install the package in editable mode
     system prefix/"libexec/bin/pip", "install", "-e", "."
     
-    # Create wrapper script to call the CLI
-    # Create a temporary wrapper script file
-    wrapper = buildpath/"fusionchmingest-wrapper"
+    # Create a wrapper script that uses the venv properly
+    wrapper = buildpath/"fusionchmingest"
     wrapper.write <<~WRAPPER
       #!/bin/bash
-      exec "#{prefix}/libexec/bin/python3" -m fusionchmingest "$@"
+      exec "#{prefix}/libexec/bin/python3.11" -m fusionchmingest "$@"
     WRAPPER
     wrapper.chmod(0755)
     bin.install wrapper
