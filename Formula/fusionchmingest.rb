@@ -21,10 +21,11 @@ class Fusionchmingest < Formula
     system prefix/"libexec/bin/pip", "install", "-e", "."
     
     # Create wrapper script to call the CLI
-    bin.write_script_content <<~PYTHON
+    # Use bin.write_script instead of write_script_content
+    bin.write_script "fusionchmingest", <<~SCRIPT
       #!/bin/bash
-      "#{prefix}/libexec/bin/python3" -m fusionchmingest "$@"
-    PYTHON
+      exec "#{prefix}/libexec/bin/python3" -m fusionchmingest "$@"
+    SCRIPT
   end
 
   def caveats
