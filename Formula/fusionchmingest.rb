@@ -7,6 +7,7 @@ class Fusionchmingest < Formula
   head "https://github.com/BoraSport/FusionCHMIngest.git"
 
   depends_on "python@3.11"
+  depends_on "p7zip"
 
   def install
     python = Pathname.new("#{HOMEBREW_PREFIX}/bin/python3.11")

@@ -102,6 +102,7 @@ fusionchmingest --version
 
 - Python 3.11+
 - Homebrew (for macOS)
+- p7zip (for CHM file extraction)
 
 ### Setup
 
