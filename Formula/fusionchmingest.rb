@@ -4,16 +4,23 @@ class Fusionchmingest < Formula
   url "https://github.com/BoraSport/FusionCHMIngest/archive/refs/tags/v1.0.0.tar.gz"
   sha256 "21ec54d5a9536e5d75218c49803bb754c0a07ed28917c2cab7fc471cbf781427"
   license "MIT"
-  head "https://github.com/wschramm/FusionCHMIngest.git"
+  head "https://github.com/BoraSport/FusionCHMIngest.git"
 
   depends_on "python@3.11"
 
   def install
-    venv = Language::Python::Virtualenv.new(
-      Formula["python@3.11"].opt_bin/"python3",
-      venv_root: Pathname.new(prefix)/"libexec"
-    )
-    venv.pip_install_and_link "."
+    python = Formula["python@3.11"].opt_bin/"python3"
+    
+    # Create virtual environment using Python's built-in venv
+    system python, "-m", "venv", prefix/"libexec"
+    
+    # Upgrade pip in the venv
+    system prefix/"libexec/bin/pip", "install", "--upgrade", "pip"
+    
+    # Install the package in editable mode
+    system prefix/"libexec/bin/pip", "install", "-e", "."
+    
+    # Create wrapper script to call the CLI
     bin.write_script_content <<~PYTHON
       #!/bin/bash
       "#{prefix}/libexec/bin/python3" -m fusionchmingest "$@"
