@@ -42,6 +42,9 @@ extracted/
 *.chm
 *.html
 *.md
+!README.md
+!spec.md
+!HOMEBREW_PLAN.md
 
 # Vector store data
 .fusionchmingest/
