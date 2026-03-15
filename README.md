@@ -22,35 +22,51 @@ Convert Fusion360 API documentation to vector embeddings for AI coding agents.
 brew install fusionchmingest
 ```
 
-#### First-Time Setup: Create Local Tap
+#### Preview Build: Create Local Tap
 
-Since this formula isn't in Homebrew core yet, you need to set up a local tap once:
+Since this formula isn't in Homebrew core yet, you need to set up a local tap to run this app once. 
 
+1. Download the most recent build from Github to your machine.
+
+1. Open your terminal window and navigate to the root directory of the project.
+
+1. Remove old tap if it exists (optional but recommended for clean setup)
 ```bash
-# Remove old tap if it exists (optional, for clean setup)
 rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
+1. Create the tap (this creates the proper directory structure)
 ```bash
-# Create the tap (this creates the proper directory structure)
 brew tap-new fusionchmingest/fusionchmingest
 ```
 
+1. Copy the formula to the tap
 ```bash
-# Copy the formula to the tap
 cp Formula/fusionchmingest.rb $(brew --repository fusionchmingest/fusionchmingest)/Formula/
 ```
 
+1. Install fusionchmingest
 ```bash
-# Install fusionchmingest
 brew install fusionchmingest
 ```
 
 After the first install, you can update with:
 
+1. Download the most recent build from Github to your machine.
+
+1. Copy the updated formula to the tap
+
+```bash
+cp Formula/fusionchmingest.rb $(brew --repository fusionchmingest/fusionchmingest)/Formula/
+```
+
+1. Run brew update to sync the tap
+
 ```bash
 brew update
 ```
+
+1. Upgrade fusionchmingest
 
 ```bash
 brew upgrade fusionchmingest
@@ -58,23 +74,20 @@ brew upgrade fusionchmingest
 
 #### Uninstall
 
+1. Uninstall the app.
 ```bash
-# Uninstall the app
 brew uninstall fusionchmingest
 ```
-
+1. Remove user data (vector store).
 ```bash
-# Remove user data (vector store)
 rm -rf ~/.fusionchmingest
 ```
-
-```bash
-# Or use zap to remove both app and user data
+Or use zap to remove both app and user data
+```bash 
 brew zap fusionchmingest
 ```
-
+1. Remove the local tap
 ```bash
-# Remove the local tap
 rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
