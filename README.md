@@ -15,12 +15,10 @@ Convert Fusion360 API documentation to vector embeddings for AI coding agents.
 ### Homebrew (macOS) - Recommended
 
 > **Note:** This formula has not been submitted to Homebrew core yet. Installation requires adding a local tap.
-
-#### Quick Install (if tap already exists)
-
-```bash
-brew install fusionchmingest
-```
+>#### Quick Install (if tap already exists)
+>```bash
+>brew install fusionchmingest
+>```
 
 #### Preview Build: Create Local Tap
 
