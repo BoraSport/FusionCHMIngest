@@ -28,24 +28,24 @@ Since this formula isn't in Homebrew core yet, you need to set up a local tap to
 
 1. Download the most recent build from Github to your machine.
 
-1. Open your terminal window and navigate to the root directory of the project.
+2. Open your terminal window and navigate to the root directory of the project.
 
-1. Remove old tap if it exists (optional but recommended for clean setup)
+3. Remove old tap if it exists (optional but recommended for clean setup)
 ```bash
 rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
 
-1. Create the tap (this creates the proper directory structure)
+4. Create the tap (this creates the proper directory structure)
 ```bash
 brew tap-new fusionchmingest/fusionchmingest
 ```
 
-1. Copy the formula to the tap
+5. Copy the formula to the tap
 ```bash
 cp Formula/fusionchmingest.rb $(brew --repository fusionchmingest/fusionchmingest)/Formula/
 ```
 
-1. Install fusionchmingest
+6. Install fusionchmingest
 ```bash
 brew install fusionchmingest
 ```
@@ -54,20 +54,17 @@ After the first install, you can update with:
 
 1. Download the most recent build from Github to your machine.
 
-1. Copy the updated formula to the tap
-
+2. Copy the updated formula to the tap
 ```bash
 cp Formula/fusionchmingest.rb $(brew --repository fusionchmingest/fusionchmingest)/Formula/
 ```
 
-1. Run brew update to sync the tap
-
+3. Run brew update to sync the tap
 ```bash
 brew update
 ```
 
-1. Upgrade fusionchmingest
-
+4. Upgrade fusionchmingest
 ```bash
 brew upgrade fusionchmingest
 ```
@@ -78,7 +75,7 @@ brew upgrade fusionchmingest
 ```bash
 brew uninstall fusionchmingest
 ```
-1. Remove user data (vector store).
+2. Remove user data (vector store).
 ```bash
 rm -rf ~/.fusionchmingest
 ```
@@ -86,7 +83,7 @@ Or use zap to remove both app and user data
 ```bash 
 brew zap fusionchmingest
 ```
-1. Remove the local tap
+3. Remove the local tap
 ```bash
 rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ```
@@ -94,7 +91,6 @@ rm -rf /opt/homebrew/Library/Taps/fusionchmingest
 ### From Source
 
 ```bash
-# Clone the repository
 git clone https://github.com/BoraSport/FusionCHMIngest.git
 cd FusionCHMIngest
 
